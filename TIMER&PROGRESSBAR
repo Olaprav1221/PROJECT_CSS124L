@@ -1,0 +1,81 @@
+package mdasproject;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
+import javax.swing.Timer;
+
+/**
+ *
+ * @author NEIL SANTOS
+ */
+public class MDASForm extends javax.swing.JFrame {
+    
+    private Timer timer;  // Timer for countdown
+    private int timeLeft;
+
+    /**
+     * Creates new form MDASForm
+     */
+    public MDASForm() {
+        initComponents();
+        setupListeners();
+    }
+
+     private void setupListeners() {
+        // Listener for difficulty selection
+        cbDifficulty.addActionListener(e -> startTimer());
+    }
+     
+    private void startTimer() {
+    String difficulty = ((String) cbDifficulty.getSelectedItem()).trim(); // Trim spaces
+    if ("Select Difficulties:".equals(difficulty)) return;
+
+    // Set time based on difficulty
+    switch (difficulty) {
+        case "Easy":
+            timeLeft = 30;
+            break;
+        case "Normal":
+            timeLeft = 45;
+            break;
+        case "Hard":
+            timeLeft = 60;
+            break;
+        default:
+            timeLeft = 30; // Default to Easy if something goes wrong
+            break;
+    }
+
+    System.out.println("Time set to: " + timeLeft); // Debugging line
+
+    // Reset progress bar and start timer
+    pb1.setMaximum(timeLeft);
+    pb1.setValue(timeLeft);
+    lblTimeLeft.setText("Time Left: " + timeLeft + " sec");
+
+    if (timer != null) {
+        timer.stop();
+    }
+
+    // Timer logic
+    timer = new Timer(1000, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (timeLeft > 0) {  
+                timeLeft--;
+                pb1.setValue(timeLeft);
+                lblTimeLeft.setText("Time Left: " + timeLeft + " sec");
+            } else {
+                timer.stop();
+                JOptionPane.showMessageDialog(null, "Time's up!");
+            }
+        }
+    });
+    timer.start();
+}
+
+//TO RUN
+    public static void main(String args[]) {
+     java.awt.EventQueue.invokeLater(() -> new MDASForm().setVisible(true));
+}
